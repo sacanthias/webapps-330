@@ -22,7 +22,7 @@
 	
 
 <script>
-    document.getElementById("my-button").onclick = console.log("hello");
+    document.querySelector("#my-button").onclick = loadTextXHR;
 
     function loadTextXHR(){
         const url = "data/pet-names.txt";
