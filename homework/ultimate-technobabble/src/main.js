@@ -1,12 +1,49 @@
-// importing helper functions
-import getRandomWord from "utils.js";
+// importing helper function getRandomWord
+import { getRandomWord } from "./utils.js";
 
-const words1 = ;
+// creating word arrays to be used in getWords
+let words1, words2, words3;
 
-const words2 = ["Propulsion", "Dissipation", "Sensor", "Improbability", "Buffer", "Graviton", "Replicator", "Matter", "Anti-matter", "Organic", "Power", "Silicon", "Holographic", "Transient", "Integrity", "Plasma", "Fusion", "Control", "Access", "Auto", "Destruct", "Isolinear", "Transwarp", "Energy", "Medical", "Environmental", "Coil", "Impulse", "Warp", "Phaser", "Operating", "Photon", "Deflector", "Integrity", "Control", "Bridge", "Dampening", "Display", "Beam", "Quantum", "Baseline", "Input"];
+// assigning dynamic page element to global variables
+const outputElement = document.querySelector("#output");
+const oneBabble = document.querySelector("#gen-1-btn");
+const fiveBabble = document.querySelector("#gen-5-btn");
 
-const words3 = ["Chamber", "Interface", "Coil", "Polymer", "Biosphere", "Platform", "Thruster", "Deflector", "Replicator", "Tricorder", "Operation", "Array", "Matrix", "Grid", "Sensor", "Mode", "Panel", "Storage", "Conduit", "Pod", "Hatch", "Regulator", "Display", "Inverter", "Spectrum", "Generator", "Cloud", "Field", "Terminal", "Module", "Procedure", "System", "Diagnostic", "Device", "Beam", "Probe", "Bank", "Tie-In", "Facility", "Bay", "Indicator", "Cell"];
+/**
+ * Loads and inserts technobabble arrays from an external JSON file.
+ */
+const getWords = () =>{
+	const url = "data/babble-data.json";
+    const xhr = new XMLHttpRequest();
 
+	xhr.onload = (e) =>{
+		const data = JSON.parse(e.target.responseText);
+
+		if(!data){
+			console.log("JSON is null!");
+			return;
+		}
+
+        words1 = data["words1"];
+		words2 = data["words2"];
+		words3 = data["words3"];
+
+		console.log(words1[1]);
+		
+		outputElement.innerHTML = getTechnobabble(1);
+	}
+
+	xhr.onerror = e => console.log(`In onerror - HTTP status code = ${e.target.status}`);
+	xhr.open('GET', url);
+	xhr.send();
+	console.log(`Ran load - HTTP Status Code = ${xhr.status}`);
+}
+
+
+/** Generates num lines of random technobabble within separate <p> elements.
+* @param {number} num - the number of desired lines
+* @returns  returns a string comprised of three-word technobabbles within separate <p> elements.
+*/
 const getTechnobabble = (num) =>{
 	let babble = "";
 	for (let i = 0; i < num; i++) {
@@ -15,13 +52,11 @@ const getTechnobabble = (num) =>{
 	return babble;
 }
 
+/**
+ * Initializes the page.
+ */
 const init = () => {
-	// assigning dynamic page element to global variables
-	let outputElement = document.querySelector("#output");
-	let oneBabble = document.querySelector("#gen-1-btn");
-	let fiveBabble = document.querySelector("#gen-5-btn");
-
-	outputElement.innerHTML = getTechnobabble(1);
+	getWords();
 
 	// generates technobabble and inserts it into the inner HTML of the output element
 	oneBabble.onclick = (e) => {
