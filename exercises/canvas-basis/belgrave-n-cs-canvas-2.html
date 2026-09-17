@@ -51,6 +51,63 @@
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
+
+			// creating two line paths
+			ctx.strokeStyle = "white";
+			ctx.lineWidth = 5;
+			ctx.beginPath();
+			ctx.moveTo(34,45);
+			ctx.lineTo(120,35);
+			ctx.moveTo(100,195);
+			ctx.lineTo(85,10);
+			ctx.closePath();
+			ctx.stroke()
+
+			// creating a circle
+			ctx.strokeStyle = "black";
+			ctx.fillStyle = "cyan";
+			ctx.beginPath();
+			ctx.arc(500,300,80,0,2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+
+			// creating the semi circle
+			ctx.strokeStyle = "black";
+			ctx.fillStyle = "cyan";
+			ctx.beginPath();
+			ctx.arc(400,300,80,0,Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+
+			// creating the two "eyes"
+			ctx.strokeStyle = "black";
+			ctx.lineWidth = 2;
+			ctx.fillStyle = "white";
+			ctx.beginPath();
+			ctx.arc(300,240,10,0,2*Math.PI);
+			ctx.moveTo(340,240);
+			ctx.arc(340,240,10,0,2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+
+			ctx.fillStyle = "black";
+			ctx.beginPath();
+			ctx.arc(300,240,3,0,2*Math.PI);
+			ctx.moveTo(340,240);
+			ctx.arc(340,240,3,0,2*Math.PI);
+			ctx.closePath();
+			ctx.fill();
+
+			// creating the last line
+			ctx.lineWidth = 20;
+			ctx.beginPath()
+			ctx.moveTo(10,20);
+			ctx.lineTo(610,20);
+			ctx.closePath();
+			ctx.stroke();
 		}
 	</script>
 </head>
