@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>First Canvas</title>
+	<style>
+	canvas{
+		border:1px solid gray;
+	}
+	</style>
+	<script>
+		// #0 - in this class we will always use ECMAScript 5's "strict" mode
+		// See what 'use strict' does here:
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
+		"use strict";
+
+        let ctx, width, height;
+        let paused = false;
+		
+		// #1 call the `init` function after the pages loads
+		window.onload = init;
+	
+		function init(){
+			console.log("page loaded!");
+			// #2 Now that the page has loaded, start drawing!
+			
+			// A - `canvas` variable points at <canvas> tag
+			let canvas = document.querySelector("canvas");
+            width = canvas.width.valueOf();
+            height = canvas.height.valueOf();
+			
+			// B - the `ctx` variable points at a "2D drawing context"
+			ctx = canvas.getContext("2d");
+
+            // C - all fill operations are now in red
+			ctx.fillStyle = "red"; 
+			
+			// D - fill a rectangle with the current fill color
+			ctx.fillRect(20,20,600,440); 
+
+            // creating the second rectangle
+            ctx.fillStyle = "green";
+            ctx.fillRect(120,120,400,300);
+            
+            // creating a third rectangle
+            ctx.strokeStyle = "purple";
+            ctx.lineWidth = 10;
+            ctx.strokeRect(50,50,200,200);
+
+            // creating a rectangle the "hard way"
+            ctx.fillStyle = "white";
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.rect(100,100,50,50);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+			// creating two line paths
+			ctx.strokeStyle = "white";
+			ctx.lineWidth = 5;
+			ctx.beginPath();
+			ctx.moveTo(34,45);
+			ctx.lineTo(120,35);
+			ctx.moveTo(100,195);
+			ctx.lineTo(85,10);
+			ctx.closePath();
+			ctx.stroke()
+
+			// creating a circle
+			ctx.strokeStyle = "black";
+			ctx.fillStyle = "cyan";
+			ctx.beginPath();
+			ctx.arc(500,300,80,0,2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+
+			// creating the semi circle
+			ctx.strokeStyle = "black";
+			ctx.fillStyle = "cyan";
+			ctx.beginPath();
+			ctx.arc(400,300,80,0,Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+
+			// creating the two "eyes"
+			ctx.strokeStyle = "black";
+			ctx.lineWidth = 2;
+			ctx.fillStyle = "white";
+			ctx.beginPath();
+			ctx.arc(300,240,10,0,2*Math.PI);
+			ctx.moveTo(340,240);
+			ctx.arc(340,240,10,0,2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+
+			ctx.fillStyle = "black";
+			ctx.beginPath();
+			ctx.arc(300,240,3,0,2*Math.PI);
+			ctx.moveTo(340,240);
+			ctx.arc(340,240,3,0,2*Math.PI);
+			ctx.closePath();
+			ctx.fill();
+
+			// creating the last line
+			ctx.lineWidth = 20;
+			ctx.beginPath()
+			ctx.moveTo(10,20);
+			ctx.lineTo(610,20);
+			ctx.closePath();
+			ctx.stroke();
+
+            // update function
+            update();
+		}
+
+        function update(){
+            requestAnimationFrame(update)
+            drawRandomArc(ctx);
+            drawRandomLine(ctx);
+        }
+        
+        function drawRandomArc(ctx){
+            ctx.fillStyle = getRandomColor();
+            ctx.beginPath()
+            ctx.arc(getRandomInt(0,width), getRandomInt(0,height), getRandomInt(1,100), getRandomInt(0,360), Math.PI * (10 / getRandomInt(1,10)));
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawRandomLine(ctx){
+            ctx.strokeStyle = getRandomColor();
+            ctx.lineWidth = getRandomInt(2,12);
+            ctx.beginPath();
+            ctx.moveTo(getRandomInt(0, width), getRandomInt(0, height));
+            ctx.lineTo(getRandomInt(0, width), getRandomInt(0, height));
+            ctx.closePath();
+            ctx.stroke();
+        }
+        
+        // handy helper functions!
+        function getRandomColor(){
+        function getByte(){
+            return 55 + Math.round(Math.random() * 200);
+        }
+        return "rgba(" + getByte() + "," + getByte() + "," + getByte() + ",.8)";
+        }
+
+        function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+    </script>
+</head>
+<body>
+	<canvas width="640" height="480">
+		Get a real browser!
+	</canvas>
+</body>
+</html>
