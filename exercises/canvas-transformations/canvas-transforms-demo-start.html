@@ -48,6 +48,20 @@
 
 			drawTriangle(ctx, 100, 100, -rotation/2, "pink" ,"red", 1);
 
+			// draw a circle with animated scale and translations
+			ctx.save();
+			ctx.translate(50 * Math.sin(rotation), 20);
+			ctx.scale(2 * Math.cos(rotation), 2 * Math.cos(rotation));
+			ctx.strokeStyle = "blue";
+			ctx.fillStyle = "white";
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.arc(200,200,50,0,Math.PI * 2);
+			ctx.closePath();
+			ctx.fill();
+			ctx.stroke();
+			ctx.restore();
+
 			// do some transformations?
 			ctx.save();
 			ctx.translate(100,0);
