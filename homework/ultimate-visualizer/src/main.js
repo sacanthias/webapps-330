@@ -1,119 +1,93 @@
-/*
-	main.js is primarily responsible for hooking up the UI to the rest of the application 
-	and setting up the main event loop
-*/
+const NUM_SAMPLES = 4096;
 
-// We will write the functions in this file in the traditional ES5 way
-// In this instance, we feel the code is more readable if written this way
-// If you want to re-write these as ES6 arrow functions, to be consistent with the other files, go ahead!
+      const minimumStrength = 100;
 
-import * as utils from './utils.js';
-import * as audio from './audio.js';
-import * as canvas from './canvas.js';
+      // 1 - get reference to the button
+      let startButton = document.querySelector("#start-btn");
+      let endButton = document.querySelector("#end-btn");
 
-// 1 - here we are faking an enumeration
-const DEFAULTS = Object.freeze({
-	sound1  :  "media/New Adventure Theme.mp3"
-});
+      // get references to debugging
+      let freqTracker = document.querySelector("#frequency-tracker");
+      let noteTracker = document.querySelector("#note-tracker");
 
-const  drawParams = {
-  showGradient : false,
-  showBars     : false,
-  showCircles  : false,
-  showNoise    : false,
-  showInvert   : false,
-  showEmboss   : false
-}
+      // 2 - create a new AudioContext object
+      let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-function init(){
-	console.log("init called");
-	console.log(`Testing utils.getRandomColor() import: ${utils.getRandomColor()}`);
-  audio.setupWebAudio(DEFAULTS.sound1);
-	let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
-	setupUI(canvasElement);
+      // 3 - create an analyser node
+      let analyserNode = audioCtx.createAnalyser();
+      analyserNode.minDecibels = -60;
+      analyserNode.maxDecibels = -20;
 
-  // initiailizing drawParams values
-  drawParams.showGradient = document.querySelector("#gradientCB").checked;
-  drawParams.showBars = document.querySelector("#barsCB").checked;
-  drawParams.showCircles = document.querySelector("#circlesCB").checked;
-  drawParams.showNoise = document.querySelector("#noiseCB").checked;
-  drawParams.showInvert = document.querySelector("#invertCB").checked;
-  drawParams.showEmboss = document.querySelector("#embossCB").checked;
+      let sourceNode;
 
-  canvas.setupCanvas(canvasElement, audio.analyserNode);
-  loop();
-}
+      // 4 - set FFT size
+      analyserNode.fftSize = NUM_SAMPLES;
 
-function setupUI(canvasElement){
-  // A - hookup fullscreen button
-  const fsButton = document.querySelector("#fsButton");
-  // volume slider & label
-  let volumeSlider = document.querySelector("#volumeSlider");
-  let volumeLabel = document.querySelector("#volumeLabel");
-  // track select dropdown
-  let trackSelect = document.querySelector("#trackSelect");
-  let gradientBox = document.querySelector("#gradientCB");
-  let barsBox = document.querySelector("#barsCB");
-  let circlesBox = document.querySelector("#circlesCB");
-  let noiseBox = document.querySelector("#noiseCB");
-  let invertBox = document.querySelector("#invertCB");
-  let embossBox = document.querySelector("#embossCB");
-	
-  // add .onclick event to button
-  fsButton.onclick = e => {
-    console.log("goFullscreen() called");
-    utils.goFullscreen(canvasElement);
-  };
+      // 5 - create an array to store frequency data
+      let data = new Uint8Array(NUM_SAMPLES / 2);
 
-  // setting up the play button to play and pause audio
-  playButton.onclick = e => {
-    console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
+      // 6 - request microphone access when button is clicked
+      startButton.onclick = () => {
+        // Ask the user for microphone permission
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then((stream) => {
+            // Create a source node from microphone input
+            sourceNode = audioCtx.createMediaStreamSource(stream);
 
-    // check if context is in suspended state (autoplay)
-    if (audio.audioCtx.state == "suspended"){
-        audio.audioCtx.resume();
-    }
-    // check audioCtx state after state reset
-    console.log(`audioCtx.state after = ${audio.audioCtx.state}`);
-    if(e.target.dataset.playing == "no"){
-        audio.playCurrentSound();
-        e.target.dataset.playing = "yes"; // css will set the text to "Pause"
-    }
-    else{
-        audio.pauseCurrentSound();
-        e.target.dataset.playing = "no"; // css will set the text to "Play"
-    }
-  }
+            // Connect microphone to analyser
+            sourceNode.connect(analyserNode);
 
-  // set up volume slider and dynamic volume level label
-  volumeSlider.oninput = e =>{
-    // set the gain
-    audio.setVolume(e.target.value);
-    // update value of label to match value of slider
-    volumeLabel.innerHTML = Math.round(e.target.value/2 * 100);
-  }
-  // set value of laberl to match initial value of slider
-  volumeSlider.dispatchEvent(new Event("input"));
+            // No need to connect to speakers!
+            return audioCtx.resume();
+          })
+          .then(() => {
+            startButton.disabled = true;
+            startButton.textContent = "Microphone Active";
 
-  trackSelect.onchange = e => {
-    audio.loadSoundFile(e.target.value);
-    // pause the current track if it is playing
-    if(playButton.dataset.playing == "yes"){
-        playButton.dispatchEvent(new MouseEvent("click"));
-    }
-  }
+            loop();
+          })
+          .catch((error) => {
+            console.error("Microphone access failed:", error);
+          });
+      };
 
-  gradientBox.onchange = () => drawParams.showGradient = !drawParams.showGradient;
-  barsBox.onchange = () => drawParams.showBars = !drawParams.showBars;
-  circlesBox.onchange = () => drawParams.showCircles = !drawParams.showCircles;
-  noiseBox.onchange = () => drawParams.showNoise = !drawParams.showNoise;
-  invertBox.onchange = () => drawParams.showInvert = !drawParams.showInvert;
-  embossBox.onchange = () => drawParams.showEmboss = !drawParams.showEmboss;
-} // end setupUI
+      endButton.onclick = () =>{
+        analyserNode.disconnect(sourceNode);
+      }
 
-function loop(){
-	requestAnimationFrame(loop);
-  canvas.draw(drawParams);
-}
+      function detectNote(magnitudes, sampleRate, fftSize){
+        bestIndex = 1
 
-export {init};
+        for(let i = 2; i < magnitudes.length - 1; i++){
+          if(magnitudes[i] > magnitudes[bestIndex]){
+            bestIndex = i;
+          }
+        }
+
+        if (magnitudes[bestIndex] < minimumStrength){
+            return console.log("No note");
+        }
+
+        frequency = bestIndex * sampleRate / fftSize;
+
+        // Round to the closest semitone; A4 = note number 69.
+        noteNumber = Math.round(69 + 12 * Math.log2(frequency / 440))
+
+        noteNames = ["C", "C#", "D", "D#", "E", "F",
+                    "F#", "G", "G#", "A", "A#", "B"]
+        noteName = noteNames[noteNumber % 12]
+        octave = Math.floor(noteNumber / 12) - 1
+
+        freqTracker.innerHTML = frequency;
+        noteTracker.innerHTML = noteName + octave;
+      }
+
+      function loop() {
+        // 7 - schedule next frame
+        requestAnimationFrame(loop);
+
+        // 8 - populate array with frequency data
+        analyserNode.getByteFrequencyData(data);
+
+        detectNote(data, audioCtx.sampleRate, analyserNode.fftSize)
+      }
