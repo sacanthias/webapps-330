@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map Start</title>
+  <!-- Includes the Mapbox GL JS CSS stylesheet -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <!-- Imports the Mapbox GL JS bundle -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="styles/default-styles.css">
+    <script src="./src/loader.js" type="module"></script>
+</head>
+<body>
+  <div id="map" style="width: 800px; height: 600px;"></div>
+  <div id="controls">
+    <button id="btn1">RIT @ Zoom 15.5</button>
+    <button id="btn2">RIT @ Isometric View</button>
+    <button id="btn3">World @ Zoom 0</button>
+    <button id="btn4">IGM @ Zoom 18</button>
+    <button id="btn5">load markers</button>
+  </div>
+</body>
+</html>
