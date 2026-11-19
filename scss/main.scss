@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Shippori+Antique+B1&family=Slackside+One&display=swap');
+
+@media screen and (min-width:784px) {
+    #holder{
+        display:flex;
+        flex-direction: row;
+        height:100vh;
+
+        #aside{
+            flex:0 0 25%;
+            max-width:25%;
+            position: sticky;
+            top:1em;
+        }
+
+        #main{
+            flex:0 0 75%;
+            max-width: 75%;
+        }
+    }
+}
+
+body{
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
+.container{
+    padding: 2em;
+}
+
+#holder{
+    
+    
+    #aside{
+        flex: 0 0 100%;
+    }
+
+    #main{
+        flex: 0 0 100%;
+    }
+}
