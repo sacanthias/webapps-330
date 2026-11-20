@@ -21,9 +21,10 @@ const searchAmiibo = (name, callback) => {
   loadXHR( `${baseurl}${name}`, callback);
 };
 
- const parseAmiiboResult = xhr => {
-    // get the `.responseText` string
-    // declare a json variable
+const App = () => {
+
+  // parses the response text from the xhr request
+  const parseAmiiboResult = xhr => {
     let json;
     // try to parse the string into a json object
     try{
@@ -34,7 +35,7 @@ const searchAmiibo = (name, callback) => {
       
       // loop through `json.amiibo` and log out the character name
       for(let item of json.amiibo){
-        console.log(item.character);
+        handleResults(item);
       }
     }
     catch{
@@ -42,23 +43,12 @@ const searchAmiibo = (name, callback) => {
     }
   };
 
-const App = () => {
   const [term, setTerm]  = useState("mario");
   const [results, getResults] = useState([]);
 
   const handleResults = e =>{
     e.preventDefault();
-
-    getResults(      {results.map(amiibo => (
-        <span key={amiibo.head + amiibo.tail} style={{color:"green"}}>
-          <h4>{amiibo.name}</h4>
-          <img 
-            width="100" 
-            alt={amiibo.character}
-            src={amiibo.image}
-          />
-        </span>
-      ))}
+    results.push(e)
   }
 
   //searchAmiibo("mario", parseAmiiboResult);
