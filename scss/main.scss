@@ -1,4 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Shippori+Antique+B1&family=Slackside+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Shippori+Antique+B1&family=Headland+One&display=swap');
+
+// variables
+$body-bg: #f3f0eb;
+$accent-one: #7288AE;
+$accent-two: #4B5694;
+$accent-three: #111844;
+
+$header: 'Headland One', serif;
+$subhead: 'Shippori Antique B1', sans-serif;
+$body-txt: 'M PLUS Rounded 1c', sans-serif;
 
 @media screen and (min-width:784px) {
     #holder{
@@ -21,7 +31,18 @@
 }
 
 body{
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: $body-txt;
+    background-color: $body-bg;
+}
+
+h1, h2{
+    font-family: $header;
+    letter-spacing: 1.5px;
+    // font-size: ;
+}
+
+h3, h4, h5, h6{
+    font-family: $subhead;
 }
 
 .container{
